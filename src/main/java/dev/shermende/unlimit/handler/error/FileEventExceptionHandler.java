@@ -22,7 +22,7 @@ public class FileEventExceptionHandler extends AbstractMessageHandler {
         final MessagingException messagingException = (MessagingException) errorMessage.getPayload();
         final Throwable throwable = messagingException.getCause();
         //
-        log.warn(throwable.getMessage(), throwable);
+        log.error(throwable.getMessage(), throwable);
     }
 
 }

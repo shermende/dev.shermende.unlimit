@@ -1,6 +1,5 @@
 package dev.shermende.unlimit.handler.error;
 
-import dev.shermende.unlimit.util.LogUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.handler.AbstractMessageHandler;
@@ -22,9 +21,8 @@ public class PayloadExceptionHandler extends AbstractMessageHandler {
         final ErrorMessage errorMessage = (ErrorMessage) exceptionMessage;
         final MessagingException messagingException = (MessagingException) errorMessage.getPayload();
         final Throwable throwable = messagingException.getCause();
-        final Message<?> message = messagingException.getFailedMessage();
         //
-        log.warn(String.format("%s %s", throwable.getMessage(), LogUtil.sanitize(message)));
+        log.error(throwable.getMessage(), throwable);
     }
 
 }
