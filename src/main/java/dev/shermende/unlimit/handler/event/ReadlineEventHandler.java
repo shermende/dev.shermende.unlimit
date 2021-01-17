@@ -4,21 +4,31 @@ import dev.shermende.support.spring.factory.Factory;
 import dev.shermende.unlimit.event.PayloadEvent;
 import dev.shermende.unlimit.event.ReadlineEvent;
 import dev.shermende.unlimit.gateway.Gateway;
+import dev.shermende.unlimit.handler.support.AbstractValidationMessageHandler;
 import dev.shermende.unlimit.util.LogUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Validator;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class ReadlineEventHandler extends AbstractMessageHandler {
+public class ReadlineEventHandler extends AbstractValidationMessageHandler {
 
     private final Gateway<Boolean, PayloadEvent> gateway;
     private final Factory<String, Converter<ReadlineEvent, PayloadEvent>> factory;
+
+    public ReadlineEventHandler(
+        @Qualifier("readlineEventValidator") Validator validator,
+        Gateway<Boolean, PayloadEvent> gateway,
+        Factory<String, Converter<ReadlineEvent, PayloadEvent>> factory
+    ) {
+        super(validator);
+        this.gateway = gateway;
+        this.factory = factory;
+    }
 
     @Override
     protected void handleMessageInternal(
