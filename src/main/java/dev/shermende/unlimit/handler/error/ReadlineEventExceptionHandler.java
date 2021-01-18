@@ -36,7 +36,7 @@ public class ReadlineEventExceptionHandler extends AbstractMessageHandler {
             new PayloadEvent()
                 .setResult(LogUtil.sanitize(throwable.getMessage()))
                 .setFilename(readlineEvent.getFilename())
-//                .setLine(readlineEvent.getLine())
+                .setLine(readlineEvent.getLine())
         );
         log.debug("Exception ReadlineEvent handled [{}]", LogUtil.sanitize(message));
     }
