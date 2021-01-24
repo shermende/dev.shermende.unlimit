@@ -1,4 +1,3 @@
-#
-logging:
-  level:
-    org.springframework.integration.handler.LoggingHandler: off
+spring:
+  main:
+    banner-mode: off

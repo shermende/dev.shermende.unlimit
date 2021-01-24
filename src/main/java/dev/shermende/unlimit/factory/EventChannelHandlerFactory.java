@@ -4,9 +4,11 @@ import dev.shermende.support.spring.factory.AbstractFactory;
 import dev.shermende.unlimit.event.FileEvent;
 import dev.shermende.unlimit.event.PayloadEvent;
 import dev.shermende.unlimit.event.ReadlineEvent;
+import dev.shermende.unlimit.event.ShutdownEvent;
 import dev.shermende.unlimit.handler.event.FileEventHandler;
 import dev.shermende.unlimit.handler.event.PayloadEventHandler;
 import dev.shermende.unlimit.handler.event.ReadlineEventHandler;
+import dev.shermende.unlimit.handler.event.ShutdownEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.integration.handler.AbstractMessageHandler;
@@ -27,6 +29,7 @@ public class EventChannelHandlerFactory extends AbstractFactory<String, Abstract
         this.registry(FileEvent.class.getSimpleName(), FileEventHandler.class);
         this.registry(ReadlineEvent.class.getSimpleName(), ReadlineEventHandler.class);
         this.registry(PayloadEvent.class.getSimpleName(), PayloadEventHandler.class);
+        this.registry(ShutdownEvent.class.getSimpleName(), ShutdownEventHandler.class);
     }
 
 }

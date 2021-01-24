@@ -4,6 +4,7 @@ import dev.shermende.unlimit.event.FileEvent;
 import dev.shermende.unlimit.event.ReadlineEvent;
 import dev.shermende.unlimit.gateway.Gateway;
 import dev.shermende.unlimit.handler.support.AbstractValidationMessageHandler;
+import dev.shermende.unlimit.util.FileUtil;
 import dev.shermende.unlimit.util.LogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,18 +15,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @Component
 public class FileEventHandler extends AbstractValidationMessageHandler {
 
+    @Qualifier("readlineEventGateway")
     private final Gateway<Boolean, ReadlineEvent> gateway;
 
     public FileEventHandler(
         @Qualifier("fileEventValidator") Validator validator,
-        Gateway<Boolean, ReadlineEvent> gateway
+        @Qualifier("readlineEventGateway") Gateway<Boolean, ReadlineEvent> gateway
     ) {
         super(validator);
         this.gateway = gateway;
@@ -36,10 +38,10 @@ public class FileEventHandler extends AbstractValidationMessageHandler {
     protected void handleMessageInternal(
         Message<?> message
     ) {
-        final AtomicLong counter = new AtomicLong(1L);
+        final AtomicLong counter = new AtomicLong(0);
         final FileEvent event = (FileEvent) message.getPayload();
         final String extension = FilenameUtils.getExtension(event.getFilename());
-        try (BufferedReader br = new BufferedReader(new FileReader(event.getFilename()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(FileUtil.openInputStream(event.getFilename())))) {
             for (String line; (line = br.readLine()) != null; )
                 gateway.send(getBuild(counter, event.getFilename(), extension, line));
         }
@@ -55,7 +57,7 @@ public class FileEventHandler extends AbstractValidationMessageHandler {
         return ReadlineEvent.builder()
             .filename(filename)
             .extension(extension)
-            .line(counter.getAndIncrement())
+            .line(counter.incrementAndGet())
             .payload(line)
             .build();
     }

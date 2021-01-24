@@ -22,8 +22,8 @@ public class ReadlineEventHandler extends AbstractValidationMessageHandler {
 
     public ReadlineEventHandler(
         @Qualifier("readlineEventValidator") Validator validator,
-        Gateway<Boolean, PayloadEvent> gateway,
-        Factory<String, Converter<ReadlineEvent, PayloadEvent>> factory
+        @Qualifier("payloadEventGateway") Gateway<Boolean, PayloadEvent> gateway,
+        @Qualifier("readlineEventConverterFactory") Factory<String, Converter<ReadlineEvent, PayloadEvent>> factory
     ) {
         super(validator);
         this.gateway = gateway;
